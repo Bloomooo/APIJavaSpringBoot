@@ -2,6 +2,7 @@ package com.example.webcompany.service;
 
 import java.util.List;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.example.webcompany.entites.User;
 import com.example.webcompany.repository.UserRepository;
@@ -12,14 +13,18 @@ import jakarta.persistence.EntityNotFoundException;
 public class UserService {
 
     private UserRepository userRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
     }
 
     public void creer(User user) throws Exception {
         User userFound = userRepository.findByEmail(user.getEmail());
         if (userFound == null) {
+            String hashedPassword = passwordEncoder.encode(user.getPassword());
+            user.setPassword(hashedPassword);
             this.userRepository.save(user);
         } else {
             throw new Exception("User " + user.getEmail() + " is already in the database");

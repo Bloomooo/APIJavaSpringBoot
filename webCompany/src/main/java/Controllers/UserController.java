@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.webcompany.entites.Authentification;
 import com.example.webcompany.entites.User;
 import com.example.webcompany.service.UserService;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping("/api")
@@ -30,7 +29,6 @@ public class UserController {
     @PostMapping("/create")
     @ResponseStatus(value = HttpStatus.CREATED)
     public void create(@RequestBody User user) throws Exception {
-        System.out.println(user.toString());
         this.userService.creer(user);
     }
 
