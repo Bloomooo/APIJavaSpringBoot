@@ -17,8 +17,4 @@ public class Authentification {
         return this.password;
     }
 
-    public boolean isFirstTime() {
-        return this.isFirstTime;
-    }
-
 }

@@ -10,6 +10,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.example.webcompany.entites.User;
 import com.example.webcompany.repository.UserRepository;
+
 import org.springframework.transaction.annotation.Transactional;
 import jakarta.persistence.EntityNotFoundException;
 
@@ -62,7 +63,7 @@ public class UserService implements UserDetailsService {
 
     @Transactional
     public boolean updatePassword(String email, String password) {
-        int updatedCount = userRepository.updatePassword(email, password);
+        int updatedCount = userRepository.updatePassword(email, passwordEncoder.encode(password));
         if (updatedCount > 0) {
             User user = userRepository.findByEmail(email);
             if (user == null) {

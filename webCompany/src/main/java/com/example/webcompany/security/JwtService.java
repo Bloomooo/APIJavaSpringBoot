@@ -51,7 +51,8 @@ public class JwtService {
                 "firstname", userDetails.getFirstname(),
                 "lastname", userDetails.getLastname(),
                 Claims.SUBJECT, userDetails.getEmail(),
-                "password", userDetails.getPassword());
+                "password", userDetails.getPassword(),
+                "firsttime", userDetails.isFirsttime());
 
         final String jwtMap = Jwts.builder()
                 .issuedAt(new Date(currentTime))

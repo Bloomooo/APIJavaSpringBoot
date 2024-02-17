@@ -55,9 +55,11 @@ public class UserController {
         Authentication authentication = this.authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(auth.getEmail(), auth.getPassword()));
         if (authentication.isAuthenticated()) {
+            Map<String, String> ez = this.jwtService.generate(auth.getEmail());
             userService.updateFirstTime(auth.getEmail(), false);
-            return this.jwtService.generate(auth.getEmail());
+            return ez;
         }
+
         return null;
     }
 
