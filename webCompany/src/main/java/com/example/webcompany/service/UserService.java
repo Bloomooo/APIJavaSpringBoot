@@ -1,7 +1,11 @@
 package com.example.webcompany.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.example.webcompany.entites.User;
@@ -10,10 +14,10 @@ import org.springframework.transaction.annotation.Transactional;
 import jakarta.persistence.EntityNotFoundException;
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
 
     private UserRepository userRepository;
-    private final BCryptPasswordEncoder passwordEncoder;
+    private BCryptPasswordEncoder passwordEncoder;
 
     public UserService(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
         this.passwordEncoder = passwordEncoder;
@@ -42,13 +46,14 @@ public class UserService {
     }
 
     @Transactional
-    public boolean authentification(String email, String password, boolean isFirstTime) {
+    public void updateFirstTime(String email, boolean isFirstTime) {
         User user = userRepository.findByEmail(email);
-        if (user == null || !passwordMatches(password, user.getPassword())) {
-            throw new EntityNotFoundException("Authentication failed");
+        if (user != null) {
+            user.setFirsttime(isFirstTime);
+            userRepository.save(user);
+        } else {
+            throw new UsernameNotFoundException("User not found with email: " + email);
         }
-        userRepository.updateIsFirstTime(isFirstTime, email);
-        return true;
     }
 
     private boolean passwordMatches(String rawPassword, String hashedPassword) {
@@ -68,5 +73,14 @@ public class UserService {
         } else {
             throw new EntityNotFoundException("Password change failed!");
         }
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepository.findByEmail(username);
+        if (user == null) {
+            throw new UsernameNotFoundException("User not found with email: " + username);
+        }
+        return user;
     }
 }
