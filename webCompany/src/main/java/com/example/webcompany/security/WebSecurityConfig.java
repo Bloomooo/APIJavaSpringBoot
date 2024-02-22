@@ -1,9 +1,9 @@
 package com.example.webcompany.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -38,9 +38,13 @@ public class WebSecurityConfig {
         httpSecurity
                 .csrf(csrf -> csrf.disable())
                 .authorizeRequests(requests -> requests
-                        .requestMatchers("forgotpassword").permitAll()
-                        .requestMatchers("/create").permitAll()
-                        .requestMatchers("/authentification").permitAll()
+                        .requestMatchers(
+                                HttpMethod.POST, "forgotpassword")
+                        .permitAll()
+                        .requestMatchers(HttpMethod.POST, "/create").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/authentification").permitAll()
+                        .requestMatchers("/alluser").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/user/{id}").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(
                         httpSecuritySessionManagementConfiguration -> httpSecuritySessionManagementConfiguration

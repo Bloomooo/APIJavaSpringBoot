@@ -4,11 +4,13 @@ import java.util.Collection;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.Getter;
@@ -42,8 +44,8 @@ public class User implements UserDetails {
     @Column(name = "firsttime")
     private boolean firsttime;
 
-    @Column(name = "role_id")
-    private int role_id;
+    @OneToOne(cascade = CascadeType.ALL)
+    private Role role;
 
     public User() {
 
@@ -82,8 +84,8 @@ public class User implements UserDetails {
         return this.firsttime;
     }
 
-    public int getRoleId() {
-        return this.role_id;
+    public Role getRole() {
+        return this.role;
     }
 
     public void setPassword(String password) {
